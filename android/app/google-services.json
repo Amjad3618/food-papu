@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "479462515526",
+    "firebase_url": "https://medico-533fd-default-rtdb.firebaseio.com",
+    "project_id": "medico-533fd",
+    "storage_bucket": "medico-533fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479462515526:android:ceed860c1eecbeafc37b47",
+        "android_client_info": {
+          "package_name": "com.example.foodpapu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3WGf-5s6ZxhkTA9oFZo915H54c_OHUzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479462515526:android:20df9d5977e11297c37b47",
+        "android_client_info": {
+          "package_name": "com.example.medico"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3WGf-5s6ZxhkTA9oFZo915H54c_OHUzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
