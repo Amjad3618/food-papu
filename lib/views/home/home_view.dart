@@ -1,7 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:foodpapu/Routes/app_routes.dart';
 import 'package:foodpapu/app_colors/app_colors.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -98,6 +101,7 @@ class _HomeViewState extends State<HomeView> {
                     color: AppColors.green,
                     onTap: () {
                       // Navigate to add products
+                      Get.offAllNamed(AppRoutes.addProductsView);
                     },
                   ),
                   _buildAdminCard(
@@ -107,6 +111,7 @@ class _HomeViewState extends State<HomeView> {
                     color: AppColors.primary,
                     onTap: () {
                       // Navigate to categories
+                      Get.offAllNamed(AppRoutes.categoriesview);
                     },
                   ),
                 ],
@@ -150,11 +155,7 @@ class _HomeViewState extends State<HomeView> {
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Icon(
-                  icon,
-                  size: 32,
-                  color: color,
-                ),
+                child: Icon(icon, size: 32, color: color),
               ),
               const SizedBox(width: 20),
               Expanded(
@@ -181,11 +182,7 @@ class _HomeViewState extends State<HomeView> {
                   ],
                 ),
               ),
-              Icon(
-                Icons.arrow_forward_ios,
-                color: AppColors.grey400,
-                size: 20,
-              ),
+              Icon(Icons.arrow_forward_ios, color: AppColors.grey400, size: 20),
             ],
           ),
         ),

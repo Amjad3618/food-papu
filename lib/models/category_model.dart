@@ -1,4 +1,5 @@
 class CategoryModel {
+  final String adminId;
   final String categoryId;
   final String categoryName;
   final String categoryImage;
@@ -8,6 +9,7 @@ class CategoryModel {
   final int itemCount;
 
   CategoryModel({
+    required this.adminId,
     required this.categoryId,
     required this.categoryName,
     required this.categoryImage,
@@ -33,6 +35,7 @@ class CategoryModel {
   // Create CategoryModel from Map (from Firebase/API)
   factory CategoryModel.fromMap(Map<String, dynamic> map) {
     return CategoryModel(
+      adminId: map['adminId'] ?? '',
       categoryId: map['categoryId'] ?? '',
       categoryName: map['categoryName'] ?? '',
       categoryImage: map['categoryImage'] ?? '',
@@ -64,6 +67,7 @@ class CategoryModel {
     int? itemCount,
   }) {
     return CategoryModel(
+      adminId: adminId ,
       categoryId: categoryId ?? this.categoryId,
       categoryName: categoryName ?? this.categoryName,
       categoryImage: categoryImage ?? this.categoryImage,
@@ -110,6 +114,7 @@ class CategoryModel {
   // Empty/Default Category
   static CategoryModel empty() {
     return CategoryModel(
+      adminId: '',
       categoryId: '',
       categoryName: '',
       categoryImage: '',

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class ProductModel {
+  final String adminId;
   final String productId;
   final String productName;
   final String description;
@@ -16,6 +17,7 @@ class ProductModel {
   final DateTime? updatedAt;
 
   ProductModel({
+    required this.adminId,
     required this.productId,
     required this.productName,
     required this.description,
@@ -52,6 +54,7 @@ class ProductModel {
   // Convert ProductModel to Map (for Firebase/API)
   Map<String, dynamic> toMap() {
     return {
+      "adminId": adminId,
       'productId': productId,
       'productName': productName,
       'description': description,
@@ -71,6 +74,7 @@ class ProductModel {
   // Create ProductModel from Map (from Firebase/API)
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
+      adminId: map['adminId'] ?? '',
       productId: map['productId'] ?? '',
       productName: map['productName'] ?? '',
       description: map['description'] ?? '',
@@ -116,6 +120,7 @@ class ProductModel {
     DateTime? updatedAt,
   }) {
     return ProductModel(
+      adminId: this.adminId,
       productId: productId ?? this.productId,
       productName: productName ?? this.productName,
       description: description ?? this.description,
@@ -164,6 +169,7 @@ class ProductModel {
   // Empty/Default Product
   static ProductModel empty() {
     return ProductModel(
+      adminId: '',
       productId: '',
       productName: '',
       description: '',
