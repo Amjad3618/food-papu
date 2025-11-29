@@ -22,10 +22,14 @@ class AuthService extends GetxController {
 
   // Check if user is already logged in
   void _checkUserStatus() {
-    final user = _firebaseAuth.currentUser;
-    if (user != null) {
-      _getAdminData(user.uid);
-      isLoggedIn.value = true;
+    try {
+      final user = _firebaseAuth.currentUser;
+      if (user != null) {
+        _getAdminData(user.uid);
+        isLoggedIn.value = true;
+      }
+    } catch (e) {
+      print('Error checking user status: $e');
     }
   }
 
@@ -44,38 +48,54 @@ class AuthService extends GetxController {
       if (name.isEmpty || email.isEmpty || password.isEmpty) {
         errorMessage.value = 'All fields are required';
         isLoading.value = false;
+        Get.snackbar('Error', errorMessage.value);
         return false;
       }
 
       if (password != confirmPassword) {
         errorMessage.value = 'Passwords do not match';
         isLoading.value = false;
+        Get.snackbar('Error', errorMessage.value);
         return false;
       }
 
       if (password.length < 6) {
         errorMessage.value = 'Password must be at least 6 characters';
         isLoading.value = false;
+        Get.snackbar('Error', errorMessage.value);
         return false;
       }
+
+      // Validate email format
+      if (!email.contains('@') || !email.contains('.')) {
+        errorMessage.value = 'Please enter a valid email';
+        isLoading.value = false;
+        Get.snackbar('Error', errorMessage.value);
+        return false;
+      }
+
+      print('Starting signup process for: $email');
 
       // Create user in Firebase Auth
       final UserCredential userCredential =
           await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
+        email: email.trim(),
         password: password,
       );
 
       final String userId = userCredential.user!.uid;
+      print('User created with ID: $userId');
 
       // Create Admin object
       final AdminMdel newAdmin = AdminMdel(
         id: userId,
         name: name,
         email: email,
-        password: password, // In production, hash this or don't store it
+        password: password,
         createdAt: DateTime.now(),
       );
+
+      print('Saving admin data to Firestore...');
 
       // Save to Firestore
       await _firebaseFirestore
@@ -83,28 +103,41 @@ class AuthService extends GetxController {
           .doc(userId)
           .set(newAdmin.toJson());
 
+      print('Admin data saved successfully');
+
       currentAdmin.value = newAdmin;
       isLoggedIn.value = true;
 
-      Get.offAllNamed(AppRoutes.homeview);
       Get.snackbar('Success', 'Account created successfully');
+      Get.offAllNamed(AppRoutes.homeview);
 
       isLoading.value = false;
       return true;
     } on FirebaseAuthException catch (e) {
       isLoading.value = false;
+      print('Firebase Auth Error: ${e.code} - ${e.message}');
+      
       if (e.code == 'email-already-in-use') {
         errorMessage.value = 'Email already in use';
       } else if (e.code == 'weak-password') {
         errorMessage.value = 'Password is too weak';
+      } else if (e.code == 'invalid-email') {
+        errorMessage.value = 'Invalid email address';
       } else {
-        errorMessage.value = e.message ?? 'An error occurred';
+        errorMessage.value = e.message ?? 'Authentication error';
       }
-      Get.snackbar('Error', errorMessage.value);
+      Get.snackbar('Auth Error', errorMessage.value);
+      return false;
+    } on FirebaseException catch (e) {
+      isLoading.value = false;
+      print('Firebase Error: ${e.code} - ${e.message}');
+      errorMessage.value = e.message ?? 'Firebase error occurred';
+      Get.snackbar('Firebase Error', errorMessage.value);
       return false;
     } catch (e) {
       isLoading.value = false;
-      errorMessage.value = 'An unexpected error occurred';
+      print('Unexpected Error: $e');
+      errorMessage.value = 'An unexpected error occurred: $e';
       Get.snackbar('Error', errorMessage.value);
       return false;
     }
@@ -122,38 +155,48 @@ class AuthService extends GetxController {
       if (email.isEmpty || password.isEmpty) {
         errorMessage.value = 'Email and password are required';
         isLoading.value = false;
+        Get.snackbar('Error', errorMessage.value);
         return false;
       }
 
+      print('Attempting login for: $email');
+
       final UserCredential userCredential =
           await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
+        email: email.trim(),
         password: password,
       );
 
       final String userId = userCredential.user!.uid;
+      print('User logged in with ID: $userId');
+
       await _getAdminData(userId);
 
       isLoggedIn.value = true;
-      Get.offAllNamed(AppRoutes.homeview);
       Get.snackbar('Success', 'Logged in successfully');
+      Get.offAllNamed(AppRoutes.homeview);
 
       isLoading.value = false;
       return true;
     } on FirebaseAuthException catch (e) {
       isLoading.value = false;
+      print('Firebase Auth Error: ${e.code} - ${e.message}');
+      
       if (e.code == 'user-not-found') {
         errorMessage.value = 'User not found';
       } else if (e.code == 'wrong-password') {
         errorMessage.value = 'Wrong password';
+      } else if (e.code == 'invalid-email') {
+        errorMessage.value = 'Invalid email address';
       } else {
-        errorMessage.value = e.message ?? 'An error occurred';
+        errorMessage.value = e.message ?? 'Authentication error';
       }
-      Get.snackbar('Error', errorMessage.value);
+      Get.snackbar('Login Error', errorMessage.value);
       return false;
     } catch (e) {
       isLoading.value = false;
-      errorMessage.value = 'An unexpected error occurred';
+      print('Unexpected Error: $e');
+      errorMessage.value = 'An unexpected error occurred: $e';
       Get.snackbar('Error', errorMessage.value);
       return false;
     }
@@ -162,11 +205,16 @@ class AuthService extends GetxController {
   // Get Admin Data from Firestore
   Future<void> _getAdminData(String userId) async {
     try {
+      print('Fetching admin data for user: $userId');
+      
       final DocumentSnapshot doc =
           await _firebaseFirestore.collection('admins').doc(userId).get();
 
       if (doc.exists) {
         currentAdmin.value = AdminMdel.fromJson(doc.data() as Map<String, dynamic>);
+        print('Admin data loaded successfully');
+      } else {
+        print('Admin document does not exist');
       }
     } catch (e) {
       print('Error getting admin data: $e');
@@ -181,13 +229,14 @@ class AuthService extends GetxController {
       currentAdmin.value = null;
       isLoggedIn.value = false;
       errorMessage.value = '';
-      Get.offAllNamed(AppRoutes.loginview);
       Get.snackbar('Success', 'Logged out successfully');
+      Get.offAllNamed(AppRoutes.loginview);
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
       errorMessage.value = 'Error logging out';
       Get.snackbar('Error', errorMessage.value);
+      print('Logout error: $e');
     }
   }
 
@@ -217,8 +266,9 @@ class AuthService extends GetxController {
       return true;
     } catch (e) {
       isLoading.value = false;
-      errorMessage.value = 'Error updating profile';
+      errorMessage.value = 'Error updating profile: $e';
       Get.snackbar('Error', errorMessage.value);
+      print('Update profile error: $e');
       return false;
     }
   }
@@ -237,6 +287,7 @@ class AuthService extends GetxController {
           .get();
       return result.docs.isNotEmpty;
     } catch (e) {
+      print('Error checking email: $e');
       return false;
     }
   }
