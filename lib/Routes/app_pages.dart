@@ -1,11 +1,10 @@
 import 'package:foodpapu/Routes/app_routes.dart';
-import 'package:foodpapu/views/categories/categories_view.dart';
-import 'package:foodpapu/views/products/add_products_view.dart';
-import 'package:get/get.dart';
+import 'package:foodpapu/views/categories/category_view.dart';
 import 'package:foodpapu/views/login/login_view.dart';
+import 'package:foodpapu/views/products/products_view.dart';
 import 'package:foodpapu/views/singup/signup_view.dart';
 import 'package:foodpapu/views/home/home_view.dart';
-
+import 'package:get/get.dart';
 
 class AppPages {
   AppPages._();
@@ -30,18 +29,21 @@ class AppPages {
       page: () => const HomeView(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),
+      // Bindings are already initialized globally, no need to repeat
     ),
-     GetPage(
+    GetPage(
       name: AppRoutes.categoriesview,
-      page: () => const CategoriesView(),
+      page: () => const CategoryView(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),
+      // Bindings are already initialized globally, no need to repeat
     ),
      GetPage(
-      name: AppRoutes.addProductsView,
-      page: () => const AddProductsView(),
+      name: AppRoutes.productview,
+      page: () => const ProductsView(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),
+      // Bindings are already initialized globally, no need to repeat
     ),
   ];
 }

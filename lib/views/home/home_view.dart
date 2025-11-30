@@ -1,10 +1,7 @@
-// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:foodpapu/Routes/app_routes.dart';
 import 'package:foodpapu/app_colors/app_colors.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -31,93 +28,117 @@ class _HomeViewState extends State<HomeView> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header Container
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.orange],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header Container
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.primary, AppColors.orange],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Welcome Admin! 👋",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Welcome Admin! 👋",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Manage your restaurant efficiently",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.textPrimary.withOpacity(0.8),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Manage your restaurant efficiently",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textPrimary.withOpacity(0.8),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
+              const SizedBox(height: 30),
 
-            // Three Admin Cards
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 1,
-                childAspectRatio: 2.5,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                children: [
-                  _buildAdminCard(
-                    icon: Icons.shopping_bag_outlined,
-                    title: "Check Orders",
-                    subtitle: "View and manage orders",
-                    color: AppColors.orange,
-                    onTap: () {
-                      // Navigate to orders
-                    },
-                  ),
-                  _buildAdminCard(
-                    icon: Icons.add_circle_outline,
-                    title: "Add Products",
-                    subtitle: "Create new menu items",
-                    color: AppColors.green,
-                    onTap: () {
-                      // Navigate to add products
-                      Get.offAllNamed(AppRoutes.addProductsView);
-                    },
-                  ),
-                  _buildAdminCard(
-                    icon: Icons.category_outlined,
-                    title: "Manage Categories",
-                    subtitle: "Organize your menu",
-                    color: AppColors.primary,
-                    onTap: () {
-                      // Navigate to categories
-                      Get.offAllNamed(AppRoutes.categoriesview);
-                    },
-                  ),
-                ],
+              // Admin Cards
+              _buildAdminCard(
+                icon: Icons.shopping_bag_outlined,
+                title: "Check Orders",
+                subtitle: "View and manage orders",
+                color: AppColors.orange,
+                onTap: () {
+                  Get.snackbar(
+                    'Coming Soon',
+                    'Orders management coming soon',
+                    duration: const Duration(seconds: 2),
+                  );
+                },
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              _buildAdminCard(
+                icon: Icons.add_circle_outline,
+                title: "Add Products",
+                subtitle: "Create new menu items",
+                color: AppColors.green,
+                onTap: () {
+                  Get.toNamed('/productsview');
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildAdminCard(
+                icon: Icons.category_outlined,
+                title: "Manage Categories",
+                subtitle: "Organize your menu",
+                color: AppColors.primary,
+                onTap: () {
+                  Get.toNamed('/categoriesview');
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildAdminCard(
+                icon: Icons.list_alt_outlined,
+                title: "View Products",
+                subtitle: "See all menu items",
+                color: Colors.purple,
+                onTap: () {
+                  Get.snackbar(
+                    'Coming Soon',
+                    'Products list coming soon',
+                    duration: const Duration(seconds: 2),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              _buildAdminCard(
+                icon: Icons.analytics_outlined,
+                title: "Analytics",
+                subtitle: "View sales & reports",
+                color: Colors.teal,
+                onTap: () {
+                  Get.snackbar(
+                    'Coming Soon',
+                    'Analytics coming soon',
+                    duration: const Duration(seconds: 2),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -182,7 +203,8 @@ class _HomeViewState extends State<HomeView> {
                   ],
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: AppColors.grey400, size: 20),
+              Icon(Icons.arrow_forward_ios,
+                  color: AppColors.grey400, size: 20),
             ],
           ),
         ),
