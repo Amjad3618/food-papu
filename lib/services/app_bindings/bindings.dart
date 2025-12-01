@@ -8,18 +8,10 @@ class AppBindings extends Bindings {
     // Check if services already exist, if not create them
     if (!Get.isRegistered<CategoryService>()) {
       Get.put(CategoryService(), permanent: true);
-      print('✅ CategoryService created');
-    } else {
-      print('ℹ️ CategoryService already exists');
-    }
+    } else {}
 
     if (!Get.isRegistered<ProductService>()) {
       Get.put(ProductService(), permanent: true);
-      print('✅ ProductService created');
-    } else {
-      print('ℹ️ ProductService already exists');
-    }
-
-    print('✅ AppBindings initialized');
+    } else {}
   }
 }

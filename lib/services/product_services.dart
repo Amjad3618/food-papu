@@ -24,7 +24,6 @@ class ProductService extends GetxController {
     if (!_hasInitialized.value) {
       fetchAdminProducts();
       _hasInitialized.value = true;
-      print('✅ ProductService.onInit() - Products fetched');
     }
   }
 
@@ -37,7 +36,6 @@ class ProductService extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      print('🔍 Fetching products for admin: $currentAdminId');
 
       final QuerySnapshot snapshot = await _firestore
           .collection('products')
@@ -45,20 +43,16 @@ class ProductService extends GetxController {
           .orderBy('createdAt', descending: true)
           .get();
 
-      print('📦 Products found: ${snapshot.docs.length}');
 
       products.value = snapshot.docs
           .map((doc) {
             final data = doc.data() as Map<String, dynamic>;
-            print('   ✓ Product: ${data['productName']}');
             return ProductModel.fromMap(data);
           })
           .toList();
 
-      print('✅ Fetched ${products.length} products');
     } catch (e) {
       errorMessage.value = 'Error fetching products: $e';
-      print('❌ Error fetching products: $e');
     } finally {
       isLoading.value = false;
     }
@@ -124,7 +118,6 @@ class ProductService extends GetxController {
       final productData = newProduct.toMap();
       productData['adminId'] = currentAdminId;
 
-      print('💾 Saving product: $productName');
 
       await _firestore
           .collection('products')
@@ -134,7 +127,6 @@ class ProductService extends GetxController {
       // Add to local list immediately
       products.add(newProduct);
       
-      print('✅ Product added: $productName');
       Get.snackbar('Success', 'Product added successfully');
 
       isLoading.value = false;
@@ -143,7 +135,6 @@ class ProductService extends GetxController {
       errorMessage.value = 'Error adding product: $e';
       Get.snackbar('Error', errorMessage.value);
       isLoading.value = false;
-      print('❌ Error adding product: $e');
       return false;
     }
   }
@@ -207,7 +198,6 @@ class ProductService extends GetxController {
       final updateData = updatedProduct.toMap();
       updateData['adminId'] = currentAdminId;
 
-      print('📝 Updating product: $productName');
 
       await _firestore
           .collection('products')
@@ -217,7 +207,6 @@ class ProductService extends GetxController {
       // Update local list immediately
       products[productIndex] = updatedProduct;
       
-      print('✅ Product updated: $productName');
       Get.snackbar('Success', 'Product updated successfully');
 
       isLoading.value = false;
@@ -226,7 +215,6 @@ class ProductService extends GetxController {
       errorMessage.value = 'Error updating product: $e';
       Get.snackbar('Error', errorMessage.value);
       isLoading.value = false;
-      print('❌ Error updating product: $e');
       return false;
     }
   }
@@ -253,11 +241,9 @@ class ProductService extends GetxController {
           final ref = _storage.refFromURL(imageUrl);
           await ref.delete();
         } catch (e) {
-          print('⚠️ Error deleting image: $e');
         }
       }
 
-      print('🗑️ Deleting product: ${product.productName}');
 
       // Delete product from Firestore
       await _firestore.collection('products').doc(productId).delete();
@@ -265,7 +251,6 @@ class ProductService extends GetxController {
       // Remove from local list immediately
       products.removeWhere((p) => p.productId == productId);
 
-      print('✅ Product deleted: ${product.productName}');
       Get.snackbar('Success', 'Product deleted successfully');
 
       isLoading.value = false;
@@ -274,7 +259,6 @@ class ProductService extends GetxController {
       errorMessage.value = 'Error deleting product: $e';
       Get.snackbar('Error', errorMessage.value);
       isLoading.value = false;
-      print('❌ Error deleting product: $e');
       return false;
     }
   }
@@ -288,7 +272,6 @@ class ProductService extends GetxController {
       final String fileName =
           'products/${currentAdminId}/${DateTime.now().millisecondsSinceEpoch}';
 
-      print('📤 Uploading image to: $fileName');
 
       final UploadTask uploadTask = _storage.ref(fileName).putFile(file);
 
@@ -301,12 +284,10 @@ class ProductService extends GetxController {
       final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
       uploadProgress.value = 0.0;
-      print('✅ Image uploaded: $downloadUrl');
       return downloadUrl;
     } catch (e) {
       errorMessage.value = 'Error uploading image: $e';
       uploadProgress.value = 0.0;
-      print('❌ Error uploading image: $e');
       return null;
     }
   }

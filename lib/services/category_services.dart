@@ -24,7 +24,6 @@ class CategoryService extends GetxController {
     if (!_hasInitialized.value) {
       fetchAdminCategories();
       _hasInitialized.value = true;
-      print('✅ CategoryService.onInit() - Categories fetched');
     }
   }
 
@@ -37,7 +36,6 @@ class CategoryService extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      print('🔍 Fetching categories for admin: $currentAdminId');
 
       final QuerySnapshot snapshot = await _firestore
           .collection('categories')
@@ -45,20 +43,16 @@ class CategoryService extends GetxController {
           .orderBy('createdAt', descending: true)
           .get();
 
-      print('📦 Categories found: ${snapshot.docs.length}');
 
       categories.value = snapshot.docs
           .map((doc) {
             final data = doc.data() as Map<String, dynamic>;
-            print('   ✓ Category: ${data['categoryName']}');
             return CategoryModel.fromMap(data);
           })
           .toList();
 
-      print('✅ Fetched ${categories.length} categories');
     } catch (e) {
       errorMessage.value = 'Error fetching categories: $e';
-      print('❌ Error fetching categories: $e');
     } finally {
       isLoading.value = false;
     }
@@ -112,7 +106,6 @@ class CategoryService extends GetxController {
         'itemCount': 0,
       };
 
-      print('💾 Saving category: $categoryName');
 
       await _firestore
           .collection('categories')
@@ -122,7 +115,6 @@ class CategoryService extends GetxController {
       // Add to local list immediately
       categories.add(newCategory);
       
-      print('✅ Category added: $categoryName');
       Get.snackbar('Success', 'Category added successfully');
 
       isLoading.value = false;
@@ -131,7 +123,6 @@ class CategoryService extends GetxController {
       errorMessage.value = 'Error adding category: $e';
       Get.snackbar('Error', errorMessage.value);
       isLoading.value = false;
-      print('❌ Error adding category: $e');
       return false;
     }
   }
@@ -175,7 +166,6 @@ class CategoryService extends GetxController {
       final updateData = updatedCategory.toMap();
       updateData['adminId'] = currentAdminId;
 
-      print('📝 Updating category: $categoryName');
 
       await _firestore
           .collection('categories')
@@ -185,7 +175,6 @@ class CategoryService extends GetxController {
       // Update local list immediately
       categories[categoryIndex] = updatedCategory;
       
-      print('✅ Category updated: $categoryName');
       Get.snackbar('Success', 'Category updated successfully');
 
       isLoading.value = false;
@@ -194,7 +183,6 @@ class CategoryService extends GetxController {
       errorMessage.value = 'Error updating category: $e';
       Get.snackbar('Error', errorMessage.value);
       isLoading.value = false;
-      print('❌ Error updating category: $e');
       return false;
     }
   }
@@ -220,10 +208,8 @@ class CategoryService extends GetxController {
         final ref = _storage.refFromURL(category.categoryImage);
         await ref.delete();
       } catch (e) {
-        print('⚠️ Error deleting image: $e');
       }
 
-      print('🗑️ Deleting category: ${category.categoryName}');
 
       // Delete category from Firestore
       await _firestore.collection('categories').doc(categoryId).delete();
@@ -231,7 +217,6 @@ class CategoryService extends GetxController {
       // Remove from local list immediately
       categories.removeWhere((c) => c.categoryId == categoryId);
 
-      print('✅ Category deleted: ${category.categoryName}');
       Get.snackbar('Success', 'Category deleted successfully');
 
       isLoading.value = false;
@@ -240,7 +225,6 @@ class CategoryService extends GetxController {
       errorMessage.value = 'Error deleting category: $e';
       Get.snackbar('Error', errorMessage.value);
       isLoading.value = false;
-      print('❌ Error deleting category: $e');
       return false;
     }
   }
@@ -254,7 +238,6 @@ class CategoryService extends GetxController {
       final String fileName =
           'categories/${currentAdminId}/${DateTime.now().millisecondsSinceEpoch}';
 
-      print('📤 Uploading image to: $fileName');
 
       final UploadTask uploadTask = _storage.ref(fileName).putFile(file);
 
@@ -267,12 +250,10 @@ class CategoryService extends GetxController {
       final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
       uploadProgress.value = 0.0;
-      print('✅ Image uploaded: $downloadUrl');
       return downloadUrl;
     } catch (e) {
       errorMessage.value = 'Error uploading image: $e';
       uploadProgress.value = 0.0;
-      print('❌ Error uploading image: $e');
       return null;
     }
   }
@@ -317,7 +298,6 @@ class CategoryService extends GetxController {
         categories[categoryIndex] = updated;
       }
     } catch (e) {
-      print('❌ Error updating item count: $e');
     }
   }
 
@@ -335,7 +315,6 @@ class CategoryService extends GetxController {
       }
       return false;
     } catch (e) {
-      print('❌ Error toggling category: $e');
       return false;
     }
   }

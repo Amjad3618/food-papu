@@ -74,7 +74,6 @@ class AuthService extends GetxController {
         return false;
       }
 
-      print('Starting signup process for: $email');
 
       // Create user in Firebase Auth
       final UserCredential userCredential =
@@ -84,7 +83,6 @@ class AuthService extends GetxController {
       );
 
       final String userId = userCredential.user!.uid;
-      print('User created with ID: $userId');
 
       // Create Admin object
       final AdminMdel newAdmin = AdminMdel(
@@ -95,7 +93,6 @@ class AuthService extends GetxController {
         createdAt: DateTime.now(),
       );
 
-      print('Saving admin data to Firestore...');
 
       // Save to Firestore
       await _firebaseFirestore
@@ -103,7 +100,6 @@ class AuthService extends GetxController {
           .doc(userId)
           .set(newAdmin.toJson());
 
-      print('Admin data saved successfully');
 
       currentAdmin.value = newAdmin;
       isLoggedIn.value = true;
@@ -115,7 +111,6 @@ class AuthService extends GetxController {
       return true;
     } on FirebaseAuthException catch (e) {
       isLoading.value = false;
-      print('Firebase Auth Error: ${e.code} - ${e.message}');
       
       if (e.code == 'email-already-in-use') {
         errorMessage.value = 'Email already in use';
@@ -130,13 +125,11 @@ class AuthService extends GetxController {
       return false;
     } on FirebaseException catch (e) {
       isLoading.value = false;
-      print('Firebase Error: ${e.code} - ${e.message}');
       errorMessage.value = e.message ?? 'Firebase error occurred';
       Get.snackbar('Firebase Error', errorMessage.value);
       return false;
     } catch (e) {
       isLoading.value = false;
-      print('Unexpected Error: $e');
       errorMessage.value = 'An unexpected error occurred: $e';
       Get.snackbar('Error', errorMessage.value);
       return false;
@@ -159,7 +152,6 @@ class AuthService extends GetxController {
         return false;
       }
 
-      print('Attempting login for: $email');
 
       final UserCredential userCredential =
           await _firebaseAuth.signInWithEmailAndPassword(
@@ -168,7 +160,6 @@ class AuthService extends GetxController {
       );
 
       final String userId = userCredential.user!.uid;
-      print('User logged in with ID: $userId');
 
       await _getAdminData(userId);
 
@@ -180,7 +171,6 @@ class AuthService extends GetxController {
       return true;
     } on FirebaseAuthException catch (e) {
       isLoading.value = false;
-      print('Firebase Auth Error: ${e.code} - ${e.message}');
       
       if (e.code == 'user-not-found') {
         errorMessage.value = 'User not found';
@@ -195,7 +185,6 @@ class AuthService extends GetxController {
       return false;
     } catch (e) {
       isLoading.value = false;
-      print('Unexpected Error: $e');
       errorMessage.value = 'An unexpected error occurred: $e';
       Get.snackbar('Error', errorMessage.value);
       return false;
@@ -205,19 +194,15 @@ class AuthService extends GetxController {
   // Get Admin Data from Firestore
   Future<void> _getAdminData(String userId) async {
     try {
-      print('Fetching admin data for user: $userId');
       
       final DocumentSnapshot doc =
           await _firebaseFirestore.collection('admins').doc(userId).get();
 
       if (doc.exists) {
         currentAdmin.value = AdminMdel.fromJson(doc.data() as Map<String, dynamic>);
-        print('Admin data loaded successfully');
       } else {
-        print('Admin document does not exist');
       }
     } catch (e) {
-      print('Error getting admin data: $e');
     }
   }
 
@@ -236,7 +221,6 @@ class AuthService extends GetxController {
       isLoading.value = false;
       errorMessage.value = 'Error logging out';
       Get.snackbar('Error', errorMessage.value);
-      print('Logout error: $e');
     }
   }
 
@@ -268,7 +252,6 @@ class AuthService extends GetxController {
       isLoading.value = false;
       errorMessage.value = 'Error updating profile: $e';
       Get.snackbar('Error', errorMessage.value);
-      print('Update profile error: $e');
       return false;
     }
   }
@@ -287,7 +270,6 @@ class AuthService extends GetxController {
           .get();
       return result.docs.isNotEmpty;
     } catch (e) {
-      print('Error checking email: $e');
       return false;
     }
   }
