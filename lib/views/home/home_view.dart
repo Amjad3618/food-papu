@@ -31,7 +31,7 @@ class _HomeViewState extends State<HomeView> {
 
     try {
       final currentUser = _auth.currentUser;
-      
+
       if (currentUser == null) {
         throw Exception('User not authenticated');
       }
@@ -279,11 +279,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
             ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: AppColors.grey400,
-              size: 24,
-            ),
+            Icon(Icons.arrow_forward_ios, color: AppColors.grey400, size: 24),
           ],
         ),
       ),

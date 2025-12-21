@@ -26,7 +26,8 @@ class MyApp extends StatelessWidget {
         primaryColor: AppColors.primary,
         brightness: Brightness.light,
       ),
-      initialBinding: AppBindings(), // ADD THIS LINE - Initialize all services at startup
+      initialBinding:
+          AppBindings(), // ADD THIS LINE - Initialize all services at startup
       home: const AuthWrapper(),
       getPages: AppPages.routes,
     );
